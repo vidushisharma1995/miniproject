@@ -1,0 +1,106 @@
+#include<conio.h>
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+void main()
+{
+    int loc,address,s,progsize,flag=0;
+    char lab[10],opr[10],mnic[10],extra[10];
+    FILE *fpi,*fpo,*fpe;
+    fpi=fopen("input.txt","r");
+    fpo=fopen("inter.txt","w");
+    fpe=fopen("symbtab.txt","w");
+    fscanf(fpi,"%s %s %s",lab,mnic,opr);
+    fclose(fpe);
+    if(strcmp(mnic,"START")!=0)
+    {
+        loc=0;
+    }
+    else
+    {
+        sscanf(mnic,"%x",&loc);
+        address=loc;
+        fprintf(fpo,"%s/t%s/t%s/n",lab,mnic,loc);
+    }
+    fscanf(fpi,"%s %s %s",lab,mnic,opr);
+    fprintf(fpo,"%x /t%s/t%s/t%s\n",loc,lab,mnic,opr);
+    while(!feof(fpi))
+    {
+        if(strcmp("END",mnic)==0)
+        {
+            break;
+        }
+        else
+        {
+            if(strcmp(lab,"-")!=0)
+            {
+                fpe=fopen("symtab.txt","r");
+                while(!feof(fpe))
+                {
+                    fscanf(fpe,"%s",extra);
+                    if(strcmp(extra,lab)==0)
+                    {
+                        printf("wrong input\n");
+                        exit(0);
+                    }
+                }
+                fclose(fpe);
+                fpe=fopen("symtab.txt","a");
+                fprintf(fpe,"%s/t%x\n",lab,loc);
+                fclose(fpe);
+            }
+            fpe=fopen("optab.txt","r");
+            flag=0;
+            while(!feof(fpe))
+            {
+                fscanf(fpe,"%s",extra);
+                if(strcmp(extra,mnic)==0)
+                {   fscanf(fpe,"%x",&s);
+                    flag=1;
+                    break;
+                }
+            }
+            fclose(fpe);
+            if(flag==1)
+            {
+                loc=loc+s;
+            }
+            else if(strcmp(mnic,"WORD")==0)
+              {
+                loc+=3;
+              }
+            else if(strcmp(mnic,"RESB")==0)
+            {   sscanf(opr,"%x",&s);
+                loc=loc+s;
+            }
+            else if(strcmp(mnic,"RESW")==0)
+            {   sscanf(opr,"%x",&s);
+                loc=loc+s*3;
+            }
+            else if(strcmp(mnic,"BYTE")==0)
+            {
+                 if(opr[0]=='C')
+                 {
+                     s=strlen(opr)-3;
+                     loc=loc+s;
+
+                 }
+                 else
+                 {
+                     s=(strlen(opr)-3)/2;
+                     loc=loc+s;
+
+                 }
+            }
+            else
+            {
+                printf("ERROR EXIT\n");
+                exit(0);
+            }
+
+        }
+         fscanf(fpi,"%s %s %s",lab,mnic,opr);
+         fprintf(fpo,"%x /t%s/t%s/t%s\n",loc,lab,mnic,opr);
+
+    }
+}
