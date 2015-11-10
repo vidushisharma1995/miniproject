@@ -9,7 +9,7 @@ void main()
     FILE *fpi,*fpo,*fpe;
     fpi=fopen("input.txt","r");
     fpo=fopen("inter.txt","w");
-    fpe=fopen("symbtab.txt","w");
+    fpe=fopen("symtab.txt","w");
     fscanf(fpi,"%s %s %s",lab,mnic,opr);
     fclose(fpe);
     if(strcmp(mnic,"START")!=0)
@@ -18,12 +18,12 @@ void main()
     }
     else
     {
-        sscanf(mnic,"%x",&loc);
+        sscanf(opr,"%x",&loc);
         address=loc;
-        fprintf(fpo,"%s/t%s/t%s/n",lab,mnic,loc);
+        fprintf(fpo,"%s\t%s\t%x\n",lab,mnic,loc);
     }
     fscanf(fpi,"%s %s %s",lab,mnic,opr);
-    fprintf(fpo,"%x /t%s/t%s/t%s\n",loc,lab,mnic,opr);
+    fprintf(fpo,"%x\t%s\t%s\t%s\n",loc,lab,mnic,opr);
     while(!feof(fpi))
     {
         if(strcmp("END",mnic)==0)
@@ -46,9 +46,10 @@ void main()
                 }
                 fclose(fpe);
                 fpe=fopen("symtab.txt","a");
-                fprintf(fpe,"%s/t%x\n",lab,loc);
+                fprintf(fpe,"%s\t%x\n",lab,loc);
                 fclose(fpe);
             }
+
             fpe=fopen("optab.txt","r");
             flag=0;
             while(!feof(fpe))
@@ -100,7 +101,11 @@ void main()
 
         }
          fscanf(fpi,"%s %s %s",lab,mnic,opr);
-         fprintf(fpo,"%x /t%s/t%s/t%s\n",loc,lab,mnic,opr);
+         if(strcmp("END",mnic)!=0)
+         fprintf(fpo,"%x\t%s\t%s\t%s\n",loc,lab,mnic,opr);
 
     }
+    fprintf(fpo,"-\t%s\t-\n",mnic);
+    s=loc-address;
+    printf("%x",s);
 }
